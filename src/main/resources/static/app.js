@@ -13,13 +13,13 @@ var app = (function () {
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         ctx.beginPath();
-        ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+        ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
         ctx.stroke();
     };
     
     
     var getMousePosition = function (evt) {
-        canvas = document.getElementById("canvas");
+        var canvas = document.getElementById("canvas");
         var rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
@@ -43,8 +43,8 @@ var app = (function () {
                 var x = theObject.x;
                 var y = theObject.y;
                 
-                alert('Punto recibido:\nX: ' + x + '\nY: ' + y  );
-                
+                //alert('Punto recibido:\nX: ' + x + '\nY: ' + y  );
+                addPointToCanvas(new Point(x,y));   
             });
         });
 
@@ -56,9 +56,16 @@ var app = (function () {
 
         init: function () {
             var can = document.getElementById("canvas");
-            
             //websocket connection
             connectAndSubscribe();
+            canvasModule.initializeCanvas("canvas");
+        },
+
+        drawPoint: function (px, py) {
+            console.info("Dibujando punto en: " + px + " , " + py);
+            var pt = new Point(px, py);
+            //addPointToCanvas(pt);
+            canvasModule.drawCanvas(px,py);
         },
 
         publishPoint: function(px,py){
@@ -81,5 +88,8 @@ var app = (function () {
             console.log("Disconnected");
         }
     };
+
+
+    
 
 })();

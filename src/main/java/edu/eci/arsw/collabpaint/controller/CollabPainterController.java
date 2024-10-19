@@ -13,7 +13,6 @@ public class CollabPainterController {
     @MessageMapping("/newpoint")
     @SendTo("/topic/newpoint")
     public Point broadcastPoint(Point point) {
-        //System.out.println("Received point: " + point);
         return point;
     }
 
