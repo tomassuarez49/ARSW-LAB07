@@ -1,6 +1,8 @@
+
 var canvasModule = (function() {
     var _canvas;
     var _ctx;
+
 
     // Inicializa el canvas y los eventos del puntero
     var initializeCanvas = function(canvas) {
@@ -46,7 +48,6 @@ var canvasModule = (function() {
             console.error("Canvas or context is not initialized");
             return;
         }
-        
         app.addPointToCanvas(new Point(px,py));
     };
 
@@ -62,3 +63,5 @@ var canvasModule = (function() {
         }
     };
 })();
+
+export default canvasModule;

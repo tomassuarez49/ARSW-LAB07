@@ -1,95 +1,103 @@
 var app = (function () {
 
-    class Point{
-        constructor(x,y){
-            this.x=x;
-            this.y=y;
-        }        
-    }
-    
-    var stompClient = null;
+    let stompClient = null;
+    let canvas;
+    let ctx;
 
-    var addPointToCanvas = function (point) {        
-        var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
+
+    class Point {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    // Funciones de dibujo y canvas
+    const addPointToCanvas = function (point) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
         ctx.stroke();
     };
-    
-    
-    var getMousePosition = function (evt) {
-        var canvas = document.getElementById("canvas");
-        var rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
+
+    const initializeCanvas = function(canvasId) {
+        canvas = document.getElementById(canvasId);
+        if (!canvas) {
+            console.error("Canvas element not found");
+            return;
+        }
+        ctx = canvas.getContext("2d");
+        initPointerEvents();
     };
 
+    // Eventos del puntero
+    const initPointerEvents = function() {
+        if (window.PointerEvent) {
+            canvas.addEventListener("pointerdown", addPointer);
+        } else {
+            canvas.addEventListener("mousedown", addPointer);
+            canvas.addEventListener("touchstart", (event) => addPointer(event.touches[0]));
+        }
+    };
+
+    const addPointer = function(event) {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        publishPoint(x, y);
+    };
 
     var connectAndSubscribe = function () {
-        console.info('Connecting to WS...');
-        var socket = new SockJS('/stompendpoint');
-        stompClient = Stomp.over(socket);
-        
-        //subscribe to /topic/TOPICXX when connections succeed
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/newpoint', function (eventbody) {
-                
-                var theObject = JSON.parse(eventbody.body);
+            console.info('Connecting to WS...');
+            var socket = new SockJS('/stompendpoint');
+            stompClient = Stomp.over(socket);
 
-                var x = theObject.x;
-                var y = theObject.y;
-                
-                //alert('Punto recibido:\nX: ' + x + '\nY: ' + y  );
-                addPointToCanvas(new Point(x,y));   
+            var topicId = document.getElementById("topicId").value;
+            //subscribe to /topic/TOPICXX when connections succeed
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/newpoint.'  + topicId, function (eventbody) {
+
+                    var theObject = JSON.parse(eventbody.body);
+                    const point = new Point(theObject.x, theObject.y);
+                    addPointToCanvas(new Point(point));
+                });
             });
-        });
 
+        };
+
+    // Funciones públicas del módulo
+    const publishPoint = function(px, py) {
+        const pt = new Point(px, py);
+        console.info("publishing point at", pt);
+        addPointToCanvas(pt);
+
+        var topicId = document.getElementById("topicId").value;
+
+        if (stompClient !== null) {
+            // Enviar el punto al servidor
+            stompClient.send("/topic/newpoint."  + topicId, {}, JSON.stringify({x:px, y:py}));
+        }
     };
-    
-    
 
     return {
-
         init: function () {
-            var can = document.getElementById("canvas");
-            //websocket connection
+            initializeCanvas("canvas");
             connectAndSubscribe();
-            canvasModule.initializeCanvas("canvas");
         },
 
-        drawPoint: function (px, py) {
-            console.info("Dibujando punto en: " + px + " , " + py);
-            var pt = new Point(px, py);
-            //addPointToCanvas(pt);
-            canvasModule.drawCanvas(px,py);
-        },
-
-        publishPoint: function(px,py){
-            var pt=new Point(px,py);
-            console.info("publishing point at "+pt);
-            addPointToCanvas(pt);
-
-            //publicar el evento
-            //creando un objeto literal
-            stompClient.send("/topic/newpoint", {}, JSON.stringify({x:px,y:py}));
-            //enviando un objeto creado a partir de una clase
-            stompClient.send("/topic/newpoint", {}, JSON.stringify(pt)); 
-        },
+        publishPoint: publishPoint,
 
         disconnect: function () {
             if (stompClient !== null) {
                 stompClient.disconnect();
             }
-            setConnected(false);
             console.log("Disconnected");
+        },
+
+        clearCanvas: function() {
+            if (ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
         }
     };
-
-
-    
-
 })();
