@@ -92,9 +92,22 @@ Android:
 Ajuste la aplicación anterior para que pueda manejar más de un dibujo a la vez, manteniendo tópicos independientes. Para esto:
 
 1. Agregue un campo en la vista, en el cual el usuario pueda ingresar un número. El número corresponderá al identificador del dibujo que se creará.
+
+![image](https://github.com/user-attachments/assets/cc739e8f-dc29-4909-b18c-95d96d589578)
+
+
 2. Modifique la aplicación para que, en lugar de conectarse y suscribirse automáticamente (en la función init()), lo haga a través de botón 'conectarse'. Éste, al oprimirse debe realizar la conexión y suscribir al cliente a un tópico que tenga un nombre dinámico, asociado el identificador ingresado, por ejemplo: /topic/newpoint.25, topic/newpoint.80, para los dibujos 25 y 80 respectivamente.
+
+![image](https://github.com/user-attachments/assets/3b18ce64-470c-4e15-9168-1dd7faac29f8)
+![image](https://github.com/user-attachments/assets/c7fdd5da-9929-4b70-bc49-cfe112eac592)
+
 3. De la misma manera, haga que las publicaciones se realicen al tópico asociado al identificador ingresado por el usuario.
+
+	![image](https://github.com/user-attachments/assets/559aa713-2d1e-4dd6-a739-e53b975e9138)
+   
 4. Rectifique que se puedan realizar dos dibujos de forma independiente, cada uno de éstos entre dos o más clientes.
+
+	![image](https://github.com/user-attachments/assets/9eb787ea-1f2e-4c52-9f82-3732e73c2af9)
 
 	```bash
 	git commit -m "PARTE 3".
