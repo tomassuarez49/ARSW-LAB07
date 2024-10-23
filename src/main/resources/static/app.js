@@ -61,6 +61,11 @@ var app = (function () {
                     const point = new Point(theObject.x, theObject.y);
                     addPointToCanvas(point);
                 });
+
+                stompClient.subscribe('/topic/newpolygon.' + topicId, function (eventbody) {
+                    var newPolygon = JSON.parse(eventbody.body);
+                    addPolygonToCanvas(newPolygon);
+                });
             });
 
         };
@@ -75,8 +80,20 @@ var app = (function () {
 
         if (stompClient !== null) {
             // Enviar el punto al servidor
-            stompClient.send("/topic/newpoint."  + topicId, {}, JSON.stringify(pt));
+            stompClient.send("/app/newpoint."  + topicId, {}, JSON.stringify(pt));
         }
+    };
+
+    var addPolygonToCanvas = function (polygon) {
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(polygon[0].x, polygon[0].y);
+        for (var i = 1; i < polygon.length; i++) {
+            ctx.lineTo(polygon[i].x, polygon[i].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
     };
 
     return {
