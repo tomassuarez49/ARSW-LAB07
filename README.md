@@ -175,8 +175,7 @@ Para ver cómo manejar esto desde el manejador de eventos STOMP del servidor, re
 
 	Se implementa la funcionalidad que se pueda pintar por medio de la pantalla "tactil", se cambian las rutas de app/newpoint a app/newpoint.{topic}
 
-	![image](https://github.com/user-attachments/assets/adec598b-2ac3-49b8-8bf6-3786d0364a3f)
-
+	![image](https://github.com/user-attachments/assets/12997723-70f9-48ff-aa10-b0e982eedfd2)
 
 5. Haga commit de lo realizado.
 
