@@ -173,6 +173,8 @@ Para ver cómo manejar esto desde el manejador de eventos STOMP del servidor, re
 	
 5. A partir de los diagramas dados en el archivo ASTAH incluido, haga un nuevo diagrama de actividades correspondiente a lo realizado hasta este punto, teniendo en cuenta el detalle de que ahora se tendrán tópicos dinámicos para manejar diferentes dibujos simultáneamente.
 
+	Se implementa la funcionalidad que se pueda pintar por medio de la pantalla "tactil", se cambian las rutas de app/newpoint a app/newpoint.{topic}
+
 	![image](https://github.com/user-attachments/assets/adec598b-2ac3-49b8-8bf6-3786d0364a3f)
 
 
